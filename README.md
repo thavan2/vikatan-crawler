@@ -1,7 +1,7 @@
 vikatan
 =======
 
-This program sownloads the viktan.com magazine articles and sends them to the given mail box. You need to have subscribed 
+This program downloads the viktan.com magazine articles and sends them to the given mail box. You need to have subscribed 
 vikatan.com user name and password and an smtps account to send emails.
 
 Features
