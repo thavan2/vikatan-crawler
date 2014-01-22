@@ -15,14 +15,11 @@ from email.mime.text import MIMEText
 from mechanize import Browser
 import datetime
 
+import vconf
+
 
 class Vikatan:
-        URL = "http://www.vikatan.com/new/magazine.php?module=magazine&mid=1"
-        efrom = "thavanathan@global-analytics.com"
-        eto = "thavanathan.t@gmail.com"
         content = ""
-        username = "thavanathan.t@gmail.com"
-        password = ""
         
         magz = ['http://www.vikatan.com/new/magazine.php?module=magazine&mid=1',]
 #                 'http://www.vikatan.com/new/magazine.php?module=magazine&mid=2',
@@ -38,15 +35,10 @@ class Vikatan:
 #                  'doctor vikatan']
     
         def __init__(self):
-            self.parse_args()
-            self.con = lite.connect('vikatan.lite')
+            self.con = lite.connect(vconf.SQLITE_PATH)
             self.cur = self.con.cursor()
             self._browser = Browser()
             self._login()
-        
-        def _closedb(self):
-            """Close connection when the program exits."""
-            self.con.close()
             
         def parse_vikatan(self, name, home_response):
 #                print home_response
@@ -76,22 +68,23 @@ class Vikatan:
             self.con.close()
         
         def _login(self):
-                self._browser.open(self.URL)
+                self._browser.open(vconf.VIKATAN_LOGIN_URL)
                 self._browser.select_form(nr=2)
-                self._browser.form['user_id'] = self.args['username']
-                self._browser.form['password'] = self.args['password']
+                self._browser.form['user_id'] = vconf.VIKATAN_USERNAME
+                self._browser.form['password'] = vconf.VIKATAN_PASSWORD
                 # logger.debug(self._browser.form)
                 self._browser.submit()      
-                                
+                print "login succesfull"
                                 
         def _isdup(self, down_link):
             max_days = 30
             min_date = datetime.datetime.now() - datetime.timedelta(max_days)
             query = "select article_id, link from articles where date > '%s'" %(min_date)
+            print query
             self.cur.execute(query)
             result_set = self.cur.fetchall()
             for record in result_set:
-                if record == down_link:
+                if record[1] == down_link:
                     return True
             return False
         
@@ -99,6 +92,7 @@ class Vikatan:
             if self._isdup(url):
                 print "duplicate url: ", url
                 return;
+            print "Not a dedup url"
             
             query = "insert into articles values (null, '%s', %s, %s, datetime('now', 'localtime'));" %(url, 0, 0)
             self.cur.execute(query)
@@ -110,22 +104,33 @@ class Vikatan:
             content = self._browser.open(url).read()           
             soup = BeautifulSoup(content)
             
+            mail_content = ""
             article = soup.find("div", {"class":"art_content"})
+            mail_content += str(article)
             self.cur.execute("update articles set downloaded = 1, date = datetime('now', 'localtime') where article_id=%s" %(article_id))
-            server = smtplib.SMTP("smtp.office365.com:587")
+            if vconf.SHOW_COMMENTS:
+                comments = soup.find("div", {"class": "article-comments"})
+                mail_content += str(comments)
+            
+            print "article read..."
+            print "connecting to smtp server..."
+            server = smtplib.SMTP(vconf.SMTP_SERVER, vconf.SMTP_PORT)
             server.starttls()
-            server.login(self.args['email'], self.args['emailpassword'])
+            server.login(vconf.SMTPS_USERNAME, vconf.SMTPS_PASSWORD)
+            print "mail server login sucessful..."
             
             msg = MIMEMultipart("alternative")
             msg['Subject'] = "[" + name + "] " + soup.title.string
-            msg['To'] = self.args['email']
+            msg['To'] = vconf.EMAIL_TO
             part1 = MIMEText('text', 'plain')
-            part2 = MIMEText(str(article), 'html')
+            part2 = MIMEText(str(mail_content), 'html')
             msg.attach(part1)
             msg.attach(part2)
-            server.sendmail(self.args['email'], self.args['email'], msg.as_string())
+            server.sendmail(vconf.EMAIL_FROM, vconf.EMAIL_TO, msg.as_string())
             server.quit()
+            print "mail sent successful..."
             self.cur.execute("update articles set sent=1 , date = datetime('now', 'localtime') where article_id=%s" %(article_id))
+            self.con.commit()
                 
 if __name__ == '__main__':
     Vikatan().main()
