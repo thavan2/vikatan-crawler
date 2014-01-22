@@ -21,18 +21,20 @@ import vconf
 class Vikatan:
         content = ""
         
-        magz = ['http://www.vikatan.com/new/magazine.php?module=magazine&mid=1',]
-#                 'http://www.vikatan.com/new/magazine.php?module=magazine&mid=2',
-#                 'http://www.vikatan.com/new/magazine.php?module=magazine&mid=3',
-#                 'http://www.vikatan.com/new/magazine.php?module=magazine&mid=6',
-#                 'http://www.vikatan.com/new/magazine.php?module=magazine&mid=7',
-#                 'http://www.vikatan.com/new/magazine.php?module=magazine&mid=17']
-        namez = ['ananda vikatan',]
-#                  'junior vikatan',
-#                  'aval vikatan',
-#                  'nanayam vikatan',
-#                  'motor vikatan',
-#                  'doctor vikatan']
+        magz = ['http://www.vikatan.com/new/magazine.php?module=magazine&mid=1',
+                'http://www.vikatan.com/new/magazine.php?module=magazine&mid=2',
+                'http://www.vikatan.com/new/magazine.php?module=magazine&mid=3',
+                'http://www.vikatan.com/new/magazine.php?module=magazine&mid=6',
+                'http://www.vikatan.com/new/magazine.php?module=magazine&mid=7',
+                'http://www.vikatan.com/new/magazine.php?module=magazine&mid=17'
+                ]
+        namez = ['ananda vikatan',
+                'junior vikatan',
+                'aval vikatan',
+                'nanayam vikatan',
+                'motor vikatan',
+                'doctor vikatan'
+                ]
     
         def __init__(self):
             self.con = lite.connect(vconf.SQLITE_PATH)

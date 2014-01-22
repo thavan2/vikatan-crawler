@@ -12,7 +12,8 @@ SMTP_PORT = 587
 SMTPS_USERNAME = "thavanathan.t@gmail.com"
 SMTPS_PASSWORD = ""
 EMAIL_FROM = "thavanathan.t@gmail.com"
-EMAIL_TO = "thavanathan.t@gmail.com,thavanathan.t@gmail.com"
+# use comma separated string if you want to send articles to multiple email ids.
+EMAIL_TO = "thavanathan.t@gmail.com"
 
 # other settings
 SHOW_COMMENTS = True
