@@ -1,5 +1,5 @@
 # sqlite_settings
-SQLITE_PATH = "G:\\projects\\vikatan.lite"
+SQLITE_PATH = "/home/thavan/vikatan.lite"
 
 # vikatan.com login settings
 VIKATAN_LOGIN_URL = "http://www.vikatan.com/new/"
@@ -16,4 +16,4 @@ EMAIL_FROM = "thavanathan.t@gmail.com"
 EMAIL_TO = "thavanathan.t@gmail.com"
 
 # other settings
-SHOW_COMMENTS = True
+SHOW_COMMENTS = False

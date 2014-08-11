@@ -45,11 +45,10 @@ class Vikatan:
         def parse_vikatan(self, name, home_response):
 #                print home_response
                 for link in BeautifulSoup(home_response, parse_only=SoupStrainer('a')):
-                        if link.has_attr('href') and link['href'].find('article.php') != -1 and link['href'].find('news.vikatan.com') == -1:
-                                url = link['href']
-                                print name, url
-                                self.read_and_send_article(name, url)
-                
+				if "href" in getattr(link, 'attrs', {}) and link['href'].find('article.php') != -1 and link['href'].find('news.vikatan.com') == -1:
+                                	url = link['href']
+                                	print name, url
+                                	self.read_and_send_article(name, url)
         def parse_args(self):
             help_text = """This program fetches articles from vikatan.com and emails the articles."""
             parser = argparse.ArgumentParser(add_help=help_text)
@@ -71,7 +70,7 @@ class Vikatan:
         
         def _login(self):
                 self._browser.open(vconf.VIKATAN_LOGIN_URL)
-                self._browser.select_form(nr=2)
+                self._browser.select_form(nr=1)
                 self._browser.form['user_id'] = vconf.VIKATAN_USERNAME
                 self._browser.form['password'] = vconf.VIKATAN_PASSWORD
                 # logger.debug(self._browser.form)
