@@ -18,9 +18,6 @@ import datetime
 import vconf
 
 
-
-
-
 class Vikatan:
     content = ""
 
